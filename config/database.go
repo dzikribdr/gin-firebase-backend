@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	
+	"github.com/dzikribdr/gin-firebase-backend/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
