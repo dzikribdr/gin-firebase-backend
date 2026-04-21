@@ -17,7 +17,7 @@ func main() {
 		Category:    "Olahan Ayam",
 		Stock:       50,
 		Description: "Nugget ayam crispy siap goreng",
-		ImageURL:    "https://picsum.photos/400",
+		ImageURL:    "https://i.ibb.co.com/MyNMzxgG/chicken-original.png",
 	},
 	{
 		Name:        "Sosis Ayam",
@@ -25,7 +25,7 @@ func main() {
 		Category:    "Olahan Ayam",
 		Stock:       60,
 		Description: "Sosis ayam premium siap masak",
-		ImageURL:    "https://picsum.photos/401",
+		ImageURL:    "https://i.ibb.co.com/R423wGLh/sosis-ayam-premium-spicy-chicken-sausage-so-good-sogood5-1.jpg",
 	},
 	{
 		Name:        "Dimsum Ayam",
@@ -33,7 +33,7 @@ func main() {
 		Category:    "Olahan Ayam",
 		Stock:       45,
 		Description: "Dimsum ayam isi 10 pcs",
-		ImageURL:    "https://picsum.photos/402",
+		ImageURL:    "https://i.ibb.co.com/Z6dYd0d3/lg-678603ec68281.jpg",
 	},
 	{
 		Name:        "Karaage Ayam",
@@ -41,7 +41,7 @@ func main() {
 		Category:    "Olahan Ayam",
 		Stock:       35,
 		Description: "Potongan ayam karaage berbumbu",
-		ImageURL:    "https://picsum.photos/403",
+		ImageURL:    "https://i.ibb.co.com/N6WVgsP9/2p6yblhoj.jpg",
 	},
 	{
 		Name:        "Chicken Katsu",
@@ -49,7 +49,7 @@ func main() {
 		Category:    "Olahan Ayam",
 		Stock:       30,
 		Description: "Chicken katsu crispy siap goreng",
-		ImageURL:    "https://picsum.photos/404",
+		ImageURL:    "https://i.ibb.co.com/TxcqqbPK/lg-60b4a32ca0fee.jpg",
 	},
 
 	{
@@ -58,7 +58,7 @@ func main() {
 		Category:    "Seafood",
 		Stock:       40,
 		Description: "Olahan ikan roll siap masak",
-		ImageURL:    "https://picsum.photos/405",
+		ImageURL:    "https://i.ibb.co.com/NdGZQmdC/brd-44261-ellafroze-fish-roll-500-gr-olahan-ikan-frozen-full01-c26f6f4e.jpg",
 	},
 	{
 		Name:        "Tempura Udang",
@@ -66,7 +66,7 @@ func main() {
 		Category:    "Seafood",
 		Stock:       25,
 		Description: "Tempura udang renyah siap goreng",
-		ImageURL:    "https://picsum.photos/406",
+		ImageURL:    "https://i.ibb.co.com/Cp1L9ctV/photo.jpg",
 	},
 	{
 		Name:        "Cumi Ring",
@@ -74,7 +74,7 @@ func main() {
 		Category:    "Seafood",
 		Stock:       20,
 		Description: "Cumi ring beku siap olah",
-		ImageURL:    "https://picsum.photos/407",
+		ImageURL:    "https://image1ws.indotrading.com/s3/productimages/webp/co47833/p370046/w600-h600/82df194e-19e1-45cf-82f8-e3c6e777d4cc.jpg",
 	},
 	{
 		Name:        "Bakso Ikan",
@@ -82,7 +82,7 @@ func main() {
 		Category:    "Seafood",
 		Stock:       50,
 		Description: "Bakso ikan kenyal dan gurih",
-		ImageURL:    "https://picsum.photos/408",
+		ImageURL:    "https://i.ibb.co.com/5x9d32gW/md-641428eb2cb82.jpg",
 	},
 	{
 		Name:        "Crab Stick",
@@ -90,7 +90,7 @@ func main() {
 		Category:    "Seafood",
 		Stock:       55,
 		Description: "Crab stick praktis untuk berbagai masakan",
-		ImageURL:    "https://picsum.photos/409",
+		ImageURL:    "https://image.made-in-china.com/202f0j00pfFvAcBtAGbe/Good-Quality-Surimi-Crab-Stick-Frozen-Crab-Meat-Sticks.jpg",
 	},
 }
 	for _, p := range products {
