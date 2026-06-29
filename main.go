@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/dzikribdr/gin-firebase-backend/config"
 	"github.com/dzikribdr/gin-firebase-backend/routes"
 	"github.com/joho/godotenv"
-	"log"
-	"os"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	// 5. Jalankan server
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "8080"
+		port = "8081"
 	}
 	log.Printf("Server berjalan di http://localhost:%s", port)
 	log.Printf("Health check: http://localhost:%s/v1/health", port)
