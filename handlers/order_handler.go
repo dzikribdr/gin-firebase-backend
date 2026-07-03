@@ -79,6 +79,29 @@ func (h *OrderHandler) GetOrderByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": order})
 }
 
+// ConfirmPayment - PUT /v1/orders/:id/confirm-payment
+// Dipanggil oleh app setelah menerima callback sukses dari CashLess.
+func (h *OrderHandler) ConfirmPayment(c *gin.Context) {
+	userID := getContextUserID(c)
+
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "ID tidak valid"})
+		return
+	}
+
+	order, err := h.orderService.ConfirmPayment(uint(id), userID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "Pembayaran dikonfirmasi",
+		"data":    order,
+	})
+}
+
 // GetAllOrders - GET /v1/admin/orders (admin only)
 func (h *OrderHandler) GetAllOrders(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))

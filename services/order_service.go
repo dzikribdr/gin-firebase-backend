@@ -66,6 +66,7 @@ func (s *OrderService) Checkout(userID uint, req *models.CheckoutRequest) (*mode
 		TotalAmount:     totalAmount,
 		ShippingAddress: req.ShippingAddress,
 		Notes:           req.Notes,
+		PaymentMethod:   req.PaymentMethod,
 		Items:           orderItems,
 	}
 
@@ -89,6 +90,34 @@ func (s *OrderService) GetOrderByID(orderID, userID uint) (*models.Order, error)
 
 func (s *OrderService) GetAllOrders(page, limit int) ([]models.Order, int64, error) {
 	return s.orderRepo.GetAll(page, limit)
+}
+
+// ConfirmPayment dipanggil setelah aplikasi menerima callback sukses dari
+// CashLess (deep link pasarmalam://payment-callback?status=success).
+// Ini satu-satunya tempat status order pindah dari "pending" ke "processing"
+// untuk metode global_institute_pay — sebelumnya TIDAK ADA endpoint ini,
+// sehingga status order tidak pernah berubah walau pembayaran di CashLess sukses.
+func (s *OrderService) ConfirmPayment(orderID, userID uint) (*models.Order, error) {
+	order, err := s.orderRepo.GetByID(orderID, userID)
+	if err != nil {
+		return nil, errors.New("order tidak ditemukan")
+	}
+
+	if order.PaymentMethod != "global_institute_pay" {
+		return nil, errors.New("order ini tidak menggunakan CashLess (global_institute_pay)")
+	}
+
+	if order.Status != models.OrderStatusPending {
+		// Sudah dikonfirmasi sebelumnya — anggap sukses (idempotent)
+		return order, nil
+	}
+
+	if err := s.orderRepo.UpdateStatus(orderID, models.OrderStatusProcessing); err != nil {
+		return nil, err
+	}
+
+	order.Status = models.OrderStatusProcessing
+	return order, nil
 }
 
 func (s *OrderService) UpdateOrderStatus(orderID uint, status models.OrderStatus) error {
