@@ -1,0 +1,16 @@
+.env
+
+# Firebase Admin SDK
+config/*.json
+firebase-service-account.json
+
+# Logs
+logs/
+*.log
+
+*.exe
+*.test
+/tmp
+/vendor
+
+catalog.sql
