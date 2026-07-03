@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/dzikribdr/gin-firebase-backend/models"
 	"github.com/dzikribdr/gin-firebase-backend/services"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 type ProductHandler struct {
@@ -21,6 +22,7 @@ func (h *ProductHandler) GetAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	category := c.Query("category")
+
 	products, total, err := h.productService.GetAll(page, limit, category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -28,6 +30,7 @@ func (h *ProductHandler) GetAll(c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    products,
@@ -47,6 +50,7 @@ func (h *ProductHandler) GetByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "ID tidak valid"})
 		return
 	}
+
 	product, err := h.productService.GetByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produk tidak ditemukan"})
@@ -62,10 +66,10 @@ func (h *ProductHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
+
 	product, err := h.productService.Create(&req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": false,
-			"message": "Gagal membuat produk"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Gagal membuat produk"})
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"success": true, "message": "Produk berhasil dibuat", "data": product})
@@ -78,11 +82,13 @@ func (h *ProductHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "ID tidak valid"})
 		return
 	}
+
 	var req models.UpdateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
+
 	product, err := h.productService.Update(uint(id), &req)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produk tidak ditemukan"})

@@ -12,6 +12,7 @@ type ProductService struct {
 func NewProductService() *ProductService {
 	return &ProductService{productRepo: repositories.NewProductRepository()}
 }
+
 func (s *ProductService) GetAll(page, limit int, category string) ([]models.Product, int64, error) {
 	if page <= 0 {
 		page = 1
@@ -21,9 +22,11 @@ func (s *ProductService) GetAll(page, limit int, category string) ([]models.Prod
 	}
 	return s.productRepo.FindAll(page, limit, category)
 }
+
 func (s *ProductService) GetByID(id uint) (*models.Product, error) {
 	return s.productRepo.FindByID(id)
 }
+
 func (s *ProductService) Create(req *models.CreateProductRequest) (*models.Product, error) {
 	product := &models.Product{
 		Name:        req.Name,
@@ -36,11 +39,13 @@ func (s *ProductService) Create(req *models.CreateProductRequest) (*models.Produ
 	err := s.productRepo.Create(product)
 	return product, err
 }
+
 func (s *ProductService) Update(id uint, req *models.UpdateProductRequest) (*models.Product, error) {
 	product, err := s.productRepo.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
+
 	// Update hanya field yang dikirim (pointer nil = tidak diupdate)
 	if req.Name != nil {
 		product.Name = *req.Name
@@ -60,9 +65,11 @@ func (s *ProductService) Update(id uint, req *models.UpdateProductRequest) (*mod
 	if req.ImageURL != nil {
 		product.ImageURL = *req.ImageURL
 	}
+
 	err = s.productRepo.Update(product)
 	return product, err
 }
+
 func (s *ProductService) Delete(id uint) error {
 	return s.productRepo.Delete(id)
 }

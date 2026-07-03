@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/dzikribdr/gin-firebase-backend/services"
 	"net/http"
 	"time"
+
+	"github.com/dzikribdr/gin-firebase-backend/services"
+	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
@@ -30,6 +31,7 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 		})
 		return
 	}
+
 	// 2. Verifikasi via service
 	jwtToken, user, err := h.authService.VerifyFirebaseToken(req.FirebaseToken)
 	if err != nil {
@@ -49,6 +51,7 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 		}
 		return
 	}
+
 	// 3. Return Backend JWT + data user
 	expireHours := 24
 	c.JSON(http.StatusOK, gin.H{

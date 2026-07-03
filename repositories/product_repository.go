@@ -15,16 +15,21 @@ func NewProductRepository() *ProductRepository {
 func (r *ProductRepository) FindAll(page, limit int, category string) ([]models.Product, int64, error) {
 	var products []models.Product
 	var total int64
+
 	query := config.DB.Model(&models.Product{}).Where("is_active = ?", true)
+
 	// Filter by category jika ada
 	if category != "" {
 		query = query.Where("category = ?", category)
 	}
+
 	// Hitung total untuk pagination
 	query.Count(&total)
+
 	// Ambil data dengan offset & limit
 	offset := (page - 1) * limit
 	result := query.Offset(offset).Limit(limit).Find(&products)
+
 	return products, total, result.Error
 }
 
@@ -48,4 +53,9 @@ func (r *ProductRepository) Update(product *models.Product) error {
 // Delete soft-delete produk (tidak hapus dari DB)
 func (r *ProductRepository) Delete(id uint) error {
 	return config.DB.Delete(&models.Product{}, id).Error
+}
+
+// UpdateStock memperbarui stok produk
+func (r *ProductRepository) UpdateStock(id uint, stock int) error {
+	return config.DB.Model(&models.Product{}).Where("id = ?", id).Update("stock", stock).Error
 }
