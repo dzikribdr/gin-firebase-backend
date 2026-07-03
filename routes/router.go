@@ -1,15 +1,19 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/dzikribdr/gin-firebase-backend/handlers"
 	"github.com/dzikribdr/gin-firebase-backend/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
-	// gin.Default() sudah include Logger & Recovery middleware
-	r := gin.Default()
-	// ─── CORS Middleware (izinkan request dari Flutter app) ───
+	// Gunakan gin.New() agar kita bisa kontrol penuh urutan middleware
+	// (tidak pakai gin.Default() yang auto-include logger bawaan gin)
+	r := gin.New()
+	r.Use(gin.Recovery()) // panic recovery tetap diperlukan
+	r.Use(middleware.HTTPLogger())
+
+	// ─── CORS Middleware ───────────────────────────────────────
 	r.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -20,42 +24,73 @@ func SetupRouter() *gin.Engine {
 		}
 		c.Next()
 	})
+
 	// ─── Init handlers ────────────────────────────────────────
 	authHandler := handlers.NewAuthHandler()
 	productHandler := handlers.NewProductHandler()
+	cartHandler := handlers.NewCartHandler()
+	orderHandler := handlers.NewOrderHandler()
+
 	// ─── API v1 group ─────────────────────────────────────────
 	v1 := r.Group("/v1")
 	{
-		// Health check — tidak perlu auth
+		// Health check
 		v1.GET("/health", func(c *gin.Context) {
-			c.JSON(200, gin.H{"status": "ok", "service": "gin-firebase-backend"})
+			c.JSON(200, gin.H{"status": "ok", "service": "mycatalog-backend"})
 		})
+
 		// ── Auth routes (public) ──────────────────────────────
 		auth := v1.Group("/auth")
 		{
-			// Terima Firebase token → return Backend JWT
 			auth.POST("/verify-token", authHandler.VerifyToken)
 		}
-		// ── Protected routes (butuh Backend JWT) ──────────────
 
+		// ── Protected routes (butuh JWT) ──────────────────────
 		protected := v1.Group("")
 		protected.Use(middleware.AuthMiddleware())
 		{
-			// Products — semua user terautentikasi bisa GET
+			// Products
 			products := protected.Group("/products")
 			{
-				products.GET("", productHandler.GetAll)      // GET/v1/products
-				products.GET("/:id", productHandler.GetByID) // GET/v1/products/:id
-				// Create, Update, Delete — hanya admin
+				products.GET("", productHandler.GetAll)
+				products.GET("/:id", productHandler.GetByID)
+
 				adminProducts := products.Group("")
 				adminProducts.Use(middleware.AdminOnly())
 				{
-					adminProducts.POST("", productHandler.Create)       // POST/v1/products
-					adminProducts.PUT("/:id", productHandler.Update)    // PUT/v1/products/:id
-					adminProducts.DELETE("/:id", productHandler.Delete) //DELETE /v1/products/:id
+					adminProducts.POST("", productHandler.Create)
+					adminProducts.PUT("/:id", productHandler.Update)
+					adminProducts.DELETE("/:id", productHandler.Delete)
 				}
+			}
+
+			// Cart
+			cart := protected.Group("/cart")
+			{
+				cart.GET("", cartHandler.GetCart)           // GET    /v1/cart
+				cart.POST("", cartHandler.AddToCart)        // POST   /v1/cart
+				cart.PUT("/:id", cartHandler.UpdateCartItem) // PUT    /v1/cart/:id
+				cart.DELETE("/:id", cartHandler.RemoveCartItem) // DELETE /v1/cart/:id
+				cart.DELETE("", cartHandler.ClearCart)      // DELETE /v1/cart
+			}
+
+			// Orders
+			orders := protected.Group("/orders")
+			{
+				orders.POST("/checkout", orderHandler.Checkout)    // POST   /v1/orders/checkout
+				orders.GET("", orderHandler.GetMyOrders)           // GET    /v1/orders
+				orders.GET("/:id", orderHandler.GetOrderByID)      // GET    /v1/orders/:id
+			}
+
+			// Admin — order management
+			admin := protected.Group("/admin")
+			admin.Use(middleware.AdminOnly())
+			{
+				admin.GET("/orders", orderHandler.GetAllOrders)                     // GET /v1/admin/orders
+				admin.PUT("/orders/:id/status", orderHandler.UpdateOrderStatus)     // PUT /v1/admin/orders/:id/status
 			}
 		}
 	}
+
 	return r
 }

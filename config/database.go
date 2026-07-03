@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/dzikribdr/gin-firebase-backend/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"os"
 )
 
 // DB adalah instance GORM global yang dipakai di seluruh aplikasi
