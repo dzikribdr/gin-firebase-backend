@@ -77,9 +77,10 @@ func SetupRouter() *gin.Engine {
 			// Orders
 			orders := protected.Group("/orders")
 			{
-				orders.POST("/checkout", orderHandler.Checkout)    // POST   /v1/orders/checkout
-				orders.GET("", orderHandler.GetMyOrders)           // GET    /v1/orders
-				orders.GET("/:id", orderHandler.GetOrderByID)      // GET    /v1/orders/:id
+				orders.POST("/checkout", orderHandler.Checkout)                  // POST /v1/orders/checkout
+				orders.GET("", orderHandler.GetMyOrders)                        // GET  /v1/orders
+				orders.GET("/:id", orderHandler.GetOrderByID)                   // GET  /v1/orders/:id
+				orders.PUT("/:id/confirm-payment", orderHandler.ConfirmPayment) // PUT  /v1/orders/:id/confirm-payment
 			}
 
 			// Admin — order management
